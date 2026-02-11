@@ -1,0 +1,29 @@
+[project]
+name = "python-kt-1"
+version = "0.1.0"
+description = "IThub Санкт-Петербург (весна 2026)"
+readme = "README.md"
+authors = [
+    { name = "Lex Trofimov", email = "daslef93@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "typer>=0.21.1",
+]
+
+[project.scripts]
+python-kt-1 = "python_kt_1:app"
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ty>=0.0.15",
+]
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1 --cov=python_kt_1 --cov-report=term-missing"

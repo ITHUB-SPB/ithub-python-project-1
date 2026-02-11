@@ -1,0 +1,91 @@
+import pathlib
+from time import localtime, strftime
+from typing import Literal, Annotated
+
+import typer
+
+import python_kt_1.use_cases as use_cases
+from .parse_params import get_files_from_path_arguments
+
+app = typer.Typer()
+
+
+@app.command()
+def stats(
+    input: Annotated[pathlib.Path, typer.Argument(help="Путь к файлу для анализа", exists=True, readable=True, file_okay=True)],
+    output: Annotated[pathlib.Path | None, typer.Option("--output", "-o", help="Путь к файлу для сохранения отчета", writable=True)] = None,
+    pos: Annotated[bool, typer.Option(help="Добавить к отчету анализ частей речи")] = False,
+):
+    '''Статистика по текстовому файлу
+    
+    Возможности:
+    - подсчёт абзацев, предложений, слов,
+    - количество и процент символов по типам,
+    - опционально, статистика по частям речи. 
+
+    Два формата вывода: 
+    - форматированный консольный вывод,
+    - неформатированный вывод в файл.
+    '''
+
+    with input.open(encoding='utf-8') as text_file:
+        text = text_file.read()
+
+    print(use_cases.stats(text))
+
+
+@app.command()
+def search(
+    pattern: Annotated[str, typer.Argument(help="Строка или регулярное выражение")],
+    input: Annotated[list[pathlib.Path], typer.Argument(help="Файл(ы) или директория для поиска", exists=True, readable=True)],
+    regex: Annotated[bool, typer.Option(help="Искать по регулярному выражению")] = False, 
+    rich: Annotated[bool, typer.Option(help="Использовать форматированный вывод")] = False,
+):
+    '''Текстовый поиск по файлам или директории.
+
+    Возможности:
+    - вывод совпадений по релевантным файлам с указанием местоположений,
+    - поиск по обычной строке либо регулярному выражению,
+    - опционально, режим форматированного вывода
+    '''
+
+    try:
+        files_paths = get_files_from_path_arguments(*input)
+
+        results = (
+            (str(path.resolve()), use_cases.search(pattern, path, regex))
+            for path in files_paths
+        )
+
+        print(tuple(results))
+    except Exception as exc:
+        print(exc)
+
+
+
+@app.command("word-cloud")
+def word_cloud(
+    input: Annotated[pathlib.Path, typer.Argument(help="Исходный текстовый файл", exists=True, readable=True)],
+    output: pathlib.Path | None = pathlib.Path("/") / f'{strftime("%H_%M_$S", localtime())}_output.png',
+    preprocess_mode: Literal["basic", "stemming", "lemmatization"] = "stemming"
+):
+    '''Построение облака самых важных слов 
+    
+    Возможности:
+    - сохранение результата в файл
+    - три уровня предобработки (базовый, стемминг, лемматизация).
+    '''
+    
+    pass
+
+
+@app.command(name="top-words")
+def top_words(
+    input: Annotated[pathlib.Path, typer.Argument(help="Исходный текстовый файл", exists=True, readable=True)],
+    report: Literal["standard", "full"] = "standard",
+    output: pathlib.Path | None = None,
+    normalize_mode: Literal["stemming", "lemmatization"] = "stemming",
+    filter_stopwords: bool = True,
+    pos: list[str] = ["__all__"],
+):
+    pass
