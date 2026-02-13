@@ -1,7 +1,7 @@
 import re
 import pathlib
 
-from ..core.types import TextStats, SymbolStats, Tokens
+from ..core.types import TextStats, SymbolStats, Tokens, TokensStats
 
 
 def stats(text: str, pos: bool = False) -> TextStats:
@@ -49,12 +49,14 @@ def stats(text: str, pos: bool = False) -> TextStats:
 
 
 def _get_symbols_stats(text: str) -> SymbolStats:
+    """Посимвольная статистика (количество и процент).
+
+    """
+    
     count_alphas = 0
     count_digits = 0
     count_spaces = 0
     count_punctuation = 0
-
-    # TODO
 
     return {
         "alphas": {"quantity": count_alphas, "percent": 15.00},
@@ -64,10 +66,8 @@ def _get_symbols_stats(text: str) -> SymbolStats:
     }
 
 
-def _get_tokens_stats(text: str):
+def _get_tokens_stats(text: str) -> TokensStats:
     """Подсчет количества токенов."""
-
-    # TODO
 
     return {
         "paragraphs": 0,
@@ -78,7 +78,5 @@ def _get_tokens_stats(text: str):
 
 def _get_pos_stats(text: str):
     """Подсчет pos-аналитики"""
-
-    # TODO
 
     return

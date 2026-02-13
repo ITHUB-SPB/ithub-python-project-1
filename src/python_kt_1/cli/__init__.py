@@ -40,10 +40,10 @@ def stats(
     - неформатированный вывод в файл.
     """
 
-    with input.open(encoding="utf-8") as text_file:
-        text = text_file.read()
+    text = input.read_text()
+    result = use_cases.stats(text)
 
-    print(use_cases.stats(text))
+    print(result)
 
 
 @app.command()
