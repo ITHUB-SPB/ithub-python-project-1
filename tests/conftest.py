@@ -44,9 +44,10 @@ def text():
     )
 
 
-@pytest.fixture(scope="session")
-def text_file(tmp_path_factory: pytest.TempPathFactory):
-    fake_file = tmp_path_factory.mktemp("data") / "text_1.txt"
+@pytest.fixture
+def text_file(request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory):
+    filename = "text_1.txt"
+    fake_file = tmp_path_factory.mktemp("data") / filename
 
     fake_file.write_text("Hello\nWorld")
 

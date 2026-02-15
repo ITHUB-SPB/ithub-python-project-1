@@ -28,7 +28,6 @@ def search(
         InvalidRegEx: в случае передачи некорректного регулярного выражения
     """
 
-    with file_path.open(encoding="utf-8") as text_file:
-        text = text_file.read()
+    text = file_path.read_text(encoding="utf-8")
 
     return []

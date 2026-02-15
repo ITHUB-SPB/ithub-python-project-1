@@ -49,10 +49,8 @@ def stats(text: str, pos: bool = False) -> TextStats:
 
 
 def _get_symbols_stats(text: str) -> SymbolStats:
-    """Посимвольная статистика (количество и процент).
+    """Посимвольная статистика (количество и процент)."""
 
-    """
-    
     count_alphas = 0
     count_digits = 0
     count_spaces = 0

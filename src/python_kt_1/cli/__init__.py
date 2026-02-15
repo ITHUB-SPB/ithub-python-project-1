@@ -73,12 +73,14 @@ def search(
     try:
         files_paths = get_files_from_path_arguments(*input)
 
-        results = (
-            (str(path.resolve()), use_cases.search(pattern, path, regex))
-            for path in files_paths
-        )
+        results = []
+        for path in files_paths:
+            filename = str(path.resolve())
+            result = use_cases.search(pattern, path, regex)
+            results.append((filename, result))
 
-        print(tuple(results))
+        print(results)
+
     except Exception as exc:
         print(exc)
 
