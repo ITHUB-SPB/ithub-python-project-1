@@ -40,7 +40,7 @@ def stats(
     - неформатированный вывод в файл.
     """
 
-    text = input.read_text()
+    text = input.read_text(encoding="utf-8")
     result = use_cases.stats(text)
 
     print(result)
