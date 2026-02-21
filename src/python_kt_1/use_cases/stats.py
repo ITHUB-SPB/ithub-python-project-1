@@ -49,28 +49,41 @@ def stats(text: str, pos: bool = False) -> TextStats:
 
 
 def _get_symbols_stats(text: str) -> SymbolStats:
-    """Посимвольная статистика (количество и процент)."""
+    """Посимвольная статистика (количество и процент).
 
+    """
+    
     count_alphas = 0
     count_digits = 0
     count_spaces = 0
     count_punctuation = 0
 
+    for symbol in text:
+        if symbol.isalpha():
+            count_alphas += 1
+        elif symbol.isdigit():
+            count_digits += 1
+        elif symbol.isspace():
+            count_spaces += 1
+        else:
+            count_punctuation += 1
+
     return {
-        "alphas": {"quantity": count_alphas, "percent": 15.00},
-        "digits": {"quantity": count_digits, "percent": 5.00},
-        "spaces": {"quantity": count_spaces, "percent": 25.50},
-        "punctuation": {"quantity": count_punctuation, "percent": 40.50},
+        "alphas": {"quantity": count_alphas, "percent": round(count_alphas / len(text) * 100, 2)},
+        "digits": {"quantity": count_digits, "percent": round},
+        "spaces": {"quantity": count_spaces, "percent": round(count_spaces / len(text) * 100, 2)},
+        "punctuation": {"quantity": count_punctuation, "percent": round(count_punctuation / len(text) * 100, 2)},
     }
+
 
 
 def _get_tokens_stats(text: str) -> TokensStats:
     """Подсчет количества токенов."""
-
+    text = text.strip()
     return {
-        "paragraphs": 0,
-        "sentences": 0,
-        "words": 0,
+        "paragraphs": len(text.splitlines()),
+        "sentences": len(re.split('[.!?]\s+', text)),
+        "words": len(re.split('\s+', text)),
     }
 
 
