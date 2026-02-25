@@ -24,5 +24,21 @@ def get_files_from_path_arguments(*args: pathlib.Path) -> Iterable[pathlib.Path]
 
     if dirs_counter and files_counter:
         raise Exception("Смешанное задание директорий и файлов")
+    
+    if dirs_counter == 1:
+        directory = args[0]
+        files = []
 
-    return args
+        for file in directory.iterdir():
+            if file.is_file() and file.suffix.lower() == ".txt":
+                files.append(file)
+
+        return files
+
+    files = []
+
+    for file in args:
+        if file.is_file() and file.suffix.lower() == ".txt":
+            files.append(file)
+
+    return files

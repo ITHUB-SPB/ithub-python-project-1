@@ -3,6 +3,7 @@ import pathlib
 import typing
 
 from ..core.types import SearchResult
+from ..core.exceptions import InvalidRegEx
 
 
 def search(
@@ -30,4 +31,21 @@ def search(
 
     text = file_path.read_text(encoding="utf-8")
 
-    return []
+    try:
+        if not is_regex:
+            pattern = re.escape(pattern)
+
+        regex = re.compile(f"(?=({pattern}))")
+
+    except re.error:
+        raise InvalidRegEx()
+
+    results = []
+
+    for match in regex.finditer(text):
+        result = match.group(1)
+        start = match.start(1)
+        end = match.end(1) - 1
+        results.append(SearchResult(result=result, start=start, end=end))
+
+    return results

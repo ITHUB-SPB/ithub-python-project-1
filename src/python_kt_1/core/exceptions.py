@@ -1,0 +1,2 @@
+class InvalidRegEx(Exception):
+    pass
