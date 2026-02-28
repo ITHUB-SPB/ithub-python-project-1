@@ -40,7 +40,7 @@ def stats(
     - неформатированный вывод в файл.
     """
 
-    text = input.read_text()
+    text = input.read_text(encoding="utf-8")
     result = use_cases.stats(text)
 
     print(result)
@@ -91,8 +91,7 @@ def word_cloud(
         pathlib.Path,
         typer.Argument(help="Исходный текстовый файл", exists=True, readable=True),
     ],
-    output: pathlib.Path | None = pathlib.Path("/")
-    / f"{strftime('%H_%M_$S', localtime())}_output.png",
+    output: pathlib.Path | None = pathlib.Path("/") / f"{strftime('%H_%M_$S', localtime())}_output.png",
     preprocess_mode: Literal["basic", "stemming", "lemmatization"] = "stemming",
 ):
     """Построение облака важных слов.
@@ -104,7 +103,11 @@ def word_cloud(
     - три уровня предобработки (базовый, стемминг, лемматизация).
     """
 
-    pass
+    text = input.read_text(encoding="utf-8")
+    result = use_cases.word_cloud(text, preprocess_mode)
+
+    print(result)
+
 
 
 @app.command(name="top-words")
@@ -130,4 +133,8 @@ def top_words(
 
     """
 
-    pass
+    text = input.read_text(encoding="utf-8")
+    result = use_cases.top_words(text, normalize_mode, pos)
+
+    print(result)
+

@@ -56,8 +56,12 @@ def _get_symbols_stats(text: str) -> SymbolStats:
     count_spaces = 0
     count_punctuation = 0
 
+    for symbol in text:
+        if symbol.isalpha():
+            count_alphas += 1
+
     return {
-        "alphas": {"quantity": count_alphas, "percent": 15.00},
+        "alphas": {"quantity": count_alphas, "percent": round(count_alphas / len(text), 2) },
         "digits": {"quantity": count_digits, "percent": 5.00},
         "spaces": {"quantity": count_spaces, "percent": 25.50},
         "punctuation": {"quantity": count_punctuation, "percent": 40.50},
@@ -66,11 +70,12 @@ def _get_symbols_stats(text: str) -> SymbolStats:
 
 def _get_tokens_stats(text: str) -> TokensStats:
     """Подсчет количества токенов."""
+    text = text.strip()
 
     return {
         "paragraphs": 0,
         "sentences": 0,
-        "words": 0,
+        "words": 0
     }
 
 
