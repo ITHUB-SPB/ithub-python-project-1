@@ -112,8 +112,40 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 uv sync
 ```
 
-### Проверка связи
+### Активация виртуального окружения
+
+**Windows**
+
+```sh
+.venv\Scripts\activate
+```
+
+**Mac / Unix**
+
+```sh
+source .venv\bin\activate
+```
+
+### Запуск приложения
+
+```sh
+uv run python-kt-1 <название команды> [...параметры]
+```
+
+либо
+
+```sh
+python-kt-1 <название команды> [...параметры]
+```
+
+Например (для вывода справки):
+
+```sh
+python-kt-1 --help
+```
+
+### Запуск автотестов
 
 ```
-uv run python-kt-1 --help
+pytest
 ```
