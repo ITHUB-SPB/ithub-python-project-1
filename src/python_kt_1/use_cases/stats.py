@@ -73,9 +73,9 @@ def _get_tokens_stats(text: str) -> TokensStats:
     text = text.strip()
 
     return {
-        "paragraphs": len(text.splitlines()),
-        "sentences": len(re.split('[.?!]\s+', text)),
-        "words": len(re.split('\s+', text))
+        "paragraphs": 0,
+        "sentences": 0,
+        "words": 0
     }
 
 

@@ -12,6 +12,7 @@ dependencies = [
     "spacy>=3.8.11",
     "textual>=7.5.0",
     "typer>=0.21.1",
+    "wordcloud>=1.9.6",
 ]
 
 [project.scripts]
