@@ -1,4 +1,12 @@
+import re
 from .types import Tokens
+
+def _get_words(text: str) -> list[str]:
+    """Разбиение на слова (без обработки)
+    """
+
+    # TODO: исправьте регулярку
+    return re.split(' ', text)
 
 
 def tokenize_text(text: str) -> Tokens:
@@ -10,10 +18,10 @@ def tokenize_text(text: str) -> Tokens:
     - слова
     """
 
-    # TODO
+    # TODO допишите функции _get_paragraphs, _get_sentences
 
     return {
         "paragraphs": [],
         "sentences": [],
-        "words": [],
+        "words": _get_words(text),
     }

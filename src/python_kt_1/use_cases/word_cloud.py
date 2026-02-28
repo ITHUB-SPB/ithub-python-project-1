@@ -1,3 +1,4 @@
+from typing import Literal
 from wordcloud import WordCloud
 from ..core.preprocess import filter_stopwords
 
