@@ -1,5 +1,10 @@
 import re
 import pathlib
+from rich.table import Table
+
+import spacy 
+nlp = spacy.load("ru_core_news_sm")
+from collections import Counter
 
 from ..core.types import TextStats, SymbolStats, Tokens, TokensStats
 
@@ -44,8 +49,9 @@ def stats(text: str, pos: bool = False) -> TextStats:
         }
 
     """
-
-    return {"tokens": _get_tokens_stats(text), "symbols": _get_symbols_stats(text)}
+    if pos:
+        return { "tokens": _get_tokens_stats(text), "symbols": _get_symbols_stats(text), "pos": _get_pos_stats(text) }
+    return { "tokens": _get_tokens_stats(text), "symbols": _get_symbols_stats(text) }
 
 
 def _get_symbols_stats(text: str) -> SymbolStats:
@@ -70,7 +76,7 @@ def _get_symbols_stats(text: str) -> SymbolStats:
 
     return {
         "alphas": {"quantity": count_alphas, "percent": round(count_alphas / len(text) * 100, 2)},
-        "digits": {"quantity": count_digits, "percent": round},
+        "digits": {"quantity": count_digits, "percent": round(count_digits / len(text) * 100, 2)},
         "spaces": {"quantity": count_spaces, "percent": round(count_spaces / len(text) * 100, 2)},
         "punctuation": {"quantity": count_punctuation, "percent": round(count_punctuation / len(text) * 100, 2)},
     }
@@ -87,7 +93,10 @@ def _get_tokens_stats(text: str) -> TokensStats:
     }
 
 
-def _get_pos_stats(text: str):
+def _get_pos_stats(text: str) -> dict:
     """Подсчет pos-аналитики"""
-
-    return
+    doc = nlp(text)
+    counter = Counter()
+    for token in doc:
+        counter[token.pos_] += 1
+    return dict(counter)

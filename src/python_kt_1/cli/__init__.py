@@ -7,6 +7,9 @@ import typer
 import python_kt_1.use_cases as use_cases
 from .parse_params import get_files_from_path_arguments
 
+from rich.console import Console
+from . import renderer
+
 app = typer.Typer()
 
 
@@ -40,10 +43,30 @@ def stats(
     - неформатированный вывод в файл.
     """
 
-    text = input.read_text()
-    result = use_cases.stats(text)
+    text = input.read_text(encoding="utf-8")
+    stats = use_cases.stats(text, pos=pos)
 
-    print(result)
+    if output:
+        if output.exists():
+            choice = typer.prompt(f"Файл {output.resolve()} уже существует. Что сделать?\n"
+                         "1. Перезаписать\n"
+                         "2. Дописать в конец\n"
+                         "3. Указать другой путь\n",
+                         type=int, default=1, show_default=False)
+            if choice == 2:
+                existing_content = output.read_text(encoding="utf-8")
+                stats = existing_content + "\n" + str(stats)
+            elif choice == 3:
+                new_path = typer.prompt("Введите новый путь для сохранения отчета", type=str)
+                output = pathlib.Path(new_path)
+
+        output.write_text(str(stats), encoding="utf-8")
+        print(f"Отчет сохранен в {output.resolve()}")
+        return
+    
+    result = renderer.format_output_stats(stats)
+    console = Console()
+    console.print(result)
 
 
 @app.command()
