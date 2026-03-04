@@ -1,0 +1,2 @@
+class InvalidPathArguments(Exception):
+    pass
