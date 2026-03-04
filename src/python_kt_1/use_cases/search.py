@@ -29,5 +29,33 @@ def search(
     """
 
     text = file_path.read_text(encoding="utf-8")
+    results = []
 
-    return []
+    if is_regex:
+        try:
+            compiled_pattern = re.compile(pattern)
+        except re.error as e:
+            raise InvalidRegEx(f"Invalid regular expression: {pattern}") from e
+
+        results = [
+            SearchResult(
+                result=match.group(),
+                start=match.start(),
+                end=match.end()
+            )
+            for match in compiled_pattern.finditer(text)
+        ]
+    else:
+        start = 0
+        while True:
+            index = text.find(pattern, start)
+            if index == -1:
+                break
+            results.append(SearchResult(
+                result=pattern,
+                start=index,
+                end=index + len(pattern)
+            ))
+            start = index + 1
+
+    return results
