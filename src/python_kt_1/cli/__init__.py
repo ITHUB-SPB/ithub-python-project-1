@@ -6,6 +6,7 @@ import typer
 
 import python_kt_1.use_cases as use_cases
 from .parse_params import get_files_from_path_arguments
+from .renderer import render
 
 app = typer.Typer()
 
@@ -79,7 +80,10 @@ def search(
             result = use_cases.search(pattern, path, regex)
             results.append((filename, result))
 
-        print(results)
+        if rich:
+            render(results)
+        else:
+            print(results)
 
     except Exception as exc:
         print(exc)
