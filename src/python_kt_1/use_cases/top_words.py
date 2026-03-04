@@ -35,12 +35,11 @@ def top_words(
     подсчитывает и возвращает список кортежей для топ-N-важных слов.
     """
     
+    # TODO допишите / исправьте ошибки
+
     initial_words = tokenize_text(text)["words"]
     words_after_clean = clean_words(initial_words)
     words_after_filter = filter_stopwords(words_after_clean) 
-
-    sorted_words_counter = sorted(_count_words(words_after_filter).items(), key=_sort_by_count)
     
-    print(sorted_words_counter[:10])
-    return sorted_words_counter
+    return sorted(_count_words(words_after_filter).items(), key=_sort_by_count)
     
