@@ -3,31 +3,36 @@ import pathlib
 import typing
 
 from ..core.types import SearchResult
-
+from ..core.exceptions import InvalidRegEx, BaseSearchError
 
 def search(
     pattern: str, file_path: pathlib.Path, is_regex: bool = False
 ) -> typing.Iterable[SearchResult]:
-    """Поиск подстроки в текстовом файле
+    """Поиск подстроки или регулярного выражения в текстовом файле."""
 
-    Args:
-        pattern: строка либо корректное регулярное выражение
-        file_path: путь к текстовому файлу для поиска
+    try:
+        text = file_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        raise BaseSearchError(f"Файл не найден: {file_path}")
+    except (UnicodeDecodeError, PermissionError):
+        return []
 
-    Returns:
-        Последовательность найденных результатов с указанием
-        совпадения, начала и конца фрагмента, например: [
-            { "result": "kitten", "start": 17, "end": 22 },
-            { "result": "kitten", "start": 43, "end": 48 }
-        ] или [
-            { "result": "KG", "start": 5, "end": 6 },
-            { "result": "G", "start": 6, "end": 6 },
-        ]
+    if is_regex:
+        try:
+            regex = re.compile(pattern)
+        except re.error as e:
+            raise InvalidRegEx(f"Некорректное регулярное выражение '{pattern}': {e}")
+    else:
+        
+        regex = re.compile(re.escape(pattern))
 
-    Raises:
-        InvalidRegEx: в случае передачи некорректного регулярного выражения
-    """
+    results: typing.List[SearchResult] = []
+    
+    for match in regex.finditer(text):
+        results.append({
+            "result": match.group(),
+            "start": match.start(),
+            "end": match.end()
+        })
 
-    text = file_path.read_text(encoding="utf-8")
-
-    return []
+    return results

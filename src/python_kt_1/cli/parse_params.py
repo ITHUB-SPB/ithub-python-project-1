@@ -1,14 +1,14 @@
 import pathlib
-import itertools
-from typing import Iterable
-
+from typing import Iterable, List
+from ..core.exceptions import PathArgumentError
 
 def get_files_from_path_arguments(*args: pathlib.Path) -> Iterable[pathlib.Path]:
-    """Возвращает список путей к текстовым файлам
+    """Возвращает список путей к текстовым файлам (.txt)
 
-    Проверяет аргументы на соответствие схеме:
-    - один и более файлов,
-    - либо ровно одна директория
+    Выполняет требования:
+    - Поиск по директории (пункт 4)
+    - Фильтрация только .txt файлов (пункт 5)
+    - Выброс кастомных исключений (пункт 7)
     """
 
     files_counter, dirs_counter = 0, 0
@@ -20,9 +20,21 @@ def get_files_from_path_arguments(*args: pathlib.Path) -> Iterable[pathlib.Path]
             files_counter += 1
 
     if dirs_counter > 1:
-        raise Exception("Передано более одной директории")
+        raise PathArgumentError("Передано более одной директории") 
 
     if dirs_counter and files_counter:
-        raise Exception("Смешанное задание директорий и файлов")
+        raise PathArgumentError("Смешанное задание директорий и файлов")
 
-    return args
+    result_files: List[pathlib.Path] = []
+
+    for path in args:
+        if path.is_dir():
+            result_files.extend(path.rglob("*.txt"))
+        
+        elif path.is_file():
+            if path.suffix.lower() == ".txt":
+                result_files.append(path)
+            else:
+                pass
+
+    return result_files

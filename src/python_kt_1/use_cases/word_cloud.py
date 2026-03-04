@@ -1,25 +1,27 @@
+import re
 from typing import Literal
 from wordcloud import WordCloud
-from ..core.preprocess import filter_stopwords
+from ..core.preprocess import clean_words, filter_stopwords, stem_words, lemmatize_words
 
 def word_cloud(
     text: str, 
     preprocess_mode: Literal["basic", "stemming", "lemmatization"] = "stemming" 
 ):
-    """Построение облака важных слов.
+    raw_words = re.findall(r'\b\w+\b', text)
+    cleaned = clean_words(raw_words)
+    filtered = filter_stopwords(cleaned)
 
-    Получает текст, выполняет базовую предобработку (разбивает на слова, 
-    убирает пунктуацию и пробельные символы, фильтрует стоп-слова. 
+    if preprocess_mode == "stemming":
+        final_words = stem_words(filtered)
+    elif preprocess_mode == "lemmatization":
+        final_words = lemmatize_words(filtered)
+    else: # basic
+        final_words = filtered
 
-    При указании режима предобработки, отличного от базового, нормализует 
-    (стеммингом либо лемматизацией). 
+    ready_text = " ".join(final_words)
 
-    Возможности:
-    - сохранение результата (изображения) в файл
-    - три уровня предобработки (базовый, стемминг, лемматизация).
-    """
-    
-    if preprocess_mode == "basic":
-        return WordCloud().generate(text).to_file()
-
-    return
+    if not ready_text.strip(): # удаляет пробелы в начале и конце
+        ready_text = "нет данных"
+        
+    wc = WordCloud(width=800, height=400, background_color="white")
+    return wc.generate(ready_text)

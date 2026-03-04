@@ -91,22 +91,18 @@ def word_cloud(
         pathlib.Path,
         typer.Argument(help="Исходный текстовый файл", exists=True, readable=True),
     ],
-    output: pathlib.Path | None = pathlib.Path("/") / f"{strftime('%H_%M_$S', localtime())}_output.png",
+    output: Annotated[
+        pathlib.Path,
+        typer.Argument(help="Путь для сохранения изображения")
+    ] = pathlib.Path("output.png"),
     preprocess_mode: Literal["basic", "stemming", "lemmatization"] = "stemming",
 ):
-    """Построение облака важных слов.
-
-    Построение облака важных слов
-
-    Возможности:
-    - сохранение результата (изображения) в файл
-    - три уровня предобработки (базовый, стемминг, лемматизация).
-    """
-
+    """Построение облака важных слов."""
     text = input.read_text(encoding="utf-8")
-    result = use_cases.word_cloud(text, preprocess_mode)
+    wc_obj = use_cases.word_cloud(text, preprocess_mode)
+    wc_obj.to_file(str(output))
 
-    print(result)
+    print(f"Облако слов сохранено в {output}")
 
 
 
