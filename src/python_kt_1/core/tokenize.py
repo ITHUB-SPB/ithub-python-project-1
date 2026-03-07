@@ -1,5 +1,14 @@
 from .types import Tokens
+from typing import Iterable
+from string import punctuation, whitespace
 
+def tokenize_text_by_words(text:str) -> Iterable[str]:
+    """
+    Разбиение текста на слова.
+    """
+    text = text.replace("\n", " ").replace("\r\n", " ")
+    words = text.split(" ")
+    return words
 
 def tokenize_text(text: str) -> Tokens:
     """Разбиение текста на токены.
@@ -15,5 +24,5 @@ def tokenize_text(text: str) -> Tokens:
     return {
         "paragraphs": [],
         "sentences": [],
-        "words": [],
+        "words": tokenize_text_by_words(text),
     }

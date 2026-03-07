@@ -29,5 +29,13 @@ def search(
     """
 
     text = file_path.read_text(encoding="utf-8")
-
-    return []
+    start = text.find(pattern)
+    if start == -1: 
+        return None
+    
+    positions = []
+    while start != -1:
+        end = start + len(pattern) - 1
+        positions.append((start, end))
+        start = text.find(pattern, end + 1)
+    return positions

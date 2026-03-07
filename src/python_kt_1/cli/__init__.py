@@ -4,6 +4,8 @@ from typing import Literal, Annotated
 
 import typer
 
+from ..core.preprocess import preprocess_text
+from ..use_cases.top_words import count_words, lemmatization_text, stemming_text, format_top_words
 import python_kt_1.use_cases as use_cases
 from .parse_params import get_files_from_path_arguments
 
@@ -152,5 +154,33 @@ def top_words(
     - запись результатов в файл.
 
     """
+    text = input.read_text(encoding="utf-8")
+    text = preprocess_text(text)
 
+    if normalize_mode == "lemmatization":
+        text = lemmatization_text(text)
+    else:
+        text = stemming_text(text)
+
+    words_dict = count_words(text, pos=pos)
+
+    if output:
+        if output.exists():
+            choice = typer.prompt(f"Файл {output.resolve()} уже существует. Что сделать?\n"
+                         "1. Перезаписать\n"
+                         "2. Дописать в конец\n"
+                         "3. Указать другой путь\n",
+                         type=int, default=1, show_default=False)
+            if choice == 2:
+                existing_content = output.read_text(encoding="utf-8")
+                stats = existing_content + "\n" + str(words_dict)
+            elif choice == 3:
+                new_path = typer.prompt("Введите новый путь для записи результата", type=str)
+                output = pathlib.Path(new_path)
+
+        output.write_text(str(words_dict), encoding="utf-8")
+        print(f"Результат сохранен в {output.resolve()}")
+        return
+    
+    print(format_top_words(words_dict))
     pass
