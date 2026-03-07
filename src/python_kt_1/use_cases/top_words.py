@@ -36,5 +36,5 @@ def format_top_words(count_words: dict[str, int]) -> str:
     """
     Форматирование результата подсчета слов в строку для вывода.
     """
-    sorted_count_words = dict(sorted(count_words.items(), key=lambda item: item[1], reverse=True))
+    sorted_count_words = dict(sorted(count_words.items(), key=lambda item: item[1], reverse=True)[:30])
     return "\n".join([f"{word}: {count}" for word, count in sorted_count_words.items()])

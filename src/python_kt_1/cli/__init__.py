@@ -164,23 +164,27 @@ def top_words(
 
     words_dict = count_words(text, pos=pos)
 
-    if output:
-        if output.exists():
-            choice = typer.prompt(f"Файл {output.resolve()} уже существует. Что сделать?\n"
-                         "1. Перезаписать\n"
-                         "2. Дописать в конец\n"
-                         "3. Указать другой путь\n",
-                         type=int, default=1, show_default=False)
-            if choice == 2:
-                existing_content = output.read_text(encoding="utf-8")
-                stats = existing_content + "\n" + str(words_dict)
-            elif choice == 3:
-                new_path = typer.prompt("Введите новый путь для записи результата", type=str)
-                output = pathlib.Path(new_path)
-
-        output.write_text(str(words_dict), encoding="utf-8")
-        print(f"Результат сохранен в {output.resolve()}")
+    if not output:
+        print(format_top_words(words_dict))
         return
+
+    if output.exists():
+        choice = typer.prompt(f"Файл {output.resolve()} уже существует. Что сделать?\n"
+                        "1. Перезаписать\n"
+                        "2. Дописать в конец\n"
+                        "3. Указать другой путь\n",
+                        type=int, default=1, show_default=False)
+        if choice == 2:
+            existing_content = output.read_text(encoding="utf-8")
+            output.write_text('\n\n'.join([existing_content, str(words_dict)]), encoding="utf-8")
+            print(f"Результат дописан в {output.resolve()}")
+            return
+        elif choice == 3:
+            new_path = typer.prompt("Введите новый путь для записи результата", type=str)
+            output = pathlib.Path(new_path)
+
+    output.write_text(str(words_dict), encoding="utf-8")
+    print(f"Результат сохранен в {output.resolve()}")
+    return
     
-    print(format_top_words(words_dict))
-    pass
+    
