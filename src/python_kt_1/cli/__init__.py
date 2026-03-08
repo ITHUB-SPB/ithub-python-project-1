@@ -1,7 +1,7 @@
 import pathlib
 from time import localtime, strftime
 from typing import Literal, Annotated
-
+from python_kt_1.cli.renderer import renderer
 import typer
 
 import python_kt_1.use_cases as use_cases
@@ -40,11 +40,24 @@ def stats(
     - неформатированный вывод в файл.
     """
 
+
     text = input.read_text(encoding="utf-8")
     result = use_cases.stats(text)
 
-    print(result)
+    if output:
 
+        with output.open("w", encoding="utf-8") as f:
+            # Преобразуем dataclass в словарь и сохраняем как JSON
+            json.dump(
+                asdict(result),
+                f, 
+                indent=2,
+                ensure_ascii=False
+            )
+        print(f"✅ Результат сохранен в {output}")
+    
+    else:
+        renderer(result)  
 
 @app.command()
 def search(

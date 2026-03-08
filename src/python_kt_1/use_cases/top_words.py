@@ -1,6 +1,9 @@
 from typing import Literal
 from ..core.preprocess import filter_stopwords, clean_words
 from python_kt_1.core.tokenize import tokenize_text
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
 
 
 def _count_words(words: list[str]) -> dict[str, int]:
