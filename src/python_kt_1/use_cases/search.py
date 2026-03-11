@@ -40,8 +40,8 @@ def regex_search(pattern: str, text: str):
     results = []
     try:
         regex = re.compile(pattern)
-    except re.error:
-        raise re.error("Invalid regular expression")
+    except re.error as e:
+        raise re.error(f"Invalid regular expression: {e}")
 
     for match in regex.finditer(text):
         results.append({
@@ -50,7 +50,6 @@ def regex_search(pattern: str, text: str):
             "end": match.end(),
         })
     return results
-
 
 def normal_search(pattern: str, text: str):
     results = []
