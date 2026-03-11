@@ -83,6 +83,7 @@ def search(
 
     except Exception as exc:
         print(exc)
+        print("ку")
 
 
 @app.command("word-cloud")
@@ -91,7 +92,8 @@ def word_cloud(
         pathlib.Path,
         typer.Argument(help="Исходный текстовый файл", exists=True, readable=True),
     ],
-    output: pathlib.Path | None = pathlib.Path("/") / f"{strftime('%H_%M_$S', localtime())}_output.png",
+    output: pathlib.Path | None = pathlib.Path("/")
+    / f"{strftime('%H_%M_$S', localtime())}_output.png",
     preprocess_mode: Literal["basic", "stemming", "lemmatization"] = "stemming",
 ):
     """Построение облака важных слов.
@@ -107,7 +109,6 @@ def word_cloud(
     result = use_cases.word_cloud(text, preprocess_mode)
 
     print(result)
-
 
 
 @app.command(name="top-words")
@@ -137,4 +138,3 @@ def top_words(
     result = use_cases.top_words(text, normalize_mode, pos)
 
     print(result)
-

@@ -1,4 +1,4 @@
-import re
+import re as standartre
 import pathlib
 import typing
 
@@ -30,4 +30,32 @@ def search(
 
     text = file_path.read_text(encoding="utf-8")
 
+    if not is_regex:
+        return _basic_search(pattern, text)
+    else:
+        print("WIP")
+        return _regular_search(pattern, text)
+
     return []
+
+
+def _basic_search(pattern: str, text: str):
+    results = []
+    pos = 0
+    while True:
+        start = text.find(pattern, pos)
+        if start == -1:
+            break
+        end = start + len(pattern)
+        results.append({"result": pattern, "start": start, "end": end})
+        pos = start + 1
+    return results
+
+
+def _regular_search(pattern: str, text: str):
+    results = []
+    for founded in standartre.finditer(pattern, text):
+        results.append(
+            {"result": founded.group(), "start": founded.start(), "end": founded.end()}
+        )
+    return results
