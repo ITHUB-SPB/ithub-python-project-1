@@ -32,20 +32,27 @@ def search(
 
     if is_regex:
         return regex_search(pattern, text)
-    return normal_search(pattern, text)
+    else:
+        return normal_search(pattern, text)
 
 
-def regex_search(pattern: str, text: str) -> list[SearchResult]:
+def regex_search(pattern: str, text: str):
+    results = []
     try:
-        return [
-            {"result": match.group(), "start": match.start(), "end": match.end()}
-            for match in re.finditer(pattern, text)
-        ]
+        regex = re.compile(pattern)
     except re.error:
         raise re.error("Invalid regular expression")
 
+    for match in regex.finditer(text):
+        results.append({
+            "result": match.group(0),
+            "start": match.start(),
+            "end": match.end(),
+        })
+    return results
 
-def normal_search(pattern: str, text: str) -> list[SearchResult]:
+
+def normal_search(pattern: str, text: str):
     results = []
     start = 0
     while True:
