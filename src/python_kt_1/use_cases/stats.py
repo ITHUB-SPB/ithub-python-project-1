@@ -1,4 +1,5 @@
 import re
+import unicodedata
 import pathlib
 
 from ..core.types import TextStats, SymbolStats, Tokens, TokensStats
@@ -45,7 +46,10 @@ def stats(text: str, pos: bool = False) -> TextStats:
 
     """
 
-    return {"tokens": _get_tokens_stats(text), "symbols": _get_symbols_stats(text)}
+    result = {"tokens": _get_tokens_stats(text), "symbols": _get_symbols_stats(text)}
+    if pos:
+        result["pos"] = _get_pos_stats(text)
+    return result
 
 
 def _get_symbols_stats(text: str) -> SymbolStats:
@@ -59,12 +63,23 @@ def _get_symbols_stats(text: str) -> SymbolStats:
     for symbol in text:
         if symbol.isalpha():
             count_alphas += 1
+        elif symbol.isdigit():
+            count_digits += 1
+        elif unicodedata.category(symbol).startswith('P'):
+            count_punctuation += 1
+        else:
+            count_spaces += 1
+
+    total = len(text)
+
+    def percent(count):
+        return round(count / total * 100, 2) if total > 0 else 0.0
 
     return {
-        "alphas": {"quantity": count_alphas, "percent": round(count_alphas / len(text), 2) },
-        "digits": {"quantity": count_digits, "percent": 5.00},
-        "spaces": {"quantity": count_spaces, "percent": 25.50},
-        "punctuation": {"quantity": count_punctuation, "percent": 40.50},
+        "alphas":      {"quantity": count_alphas,      "percent": percent(count_alphas)},
+        "digits":      {"quantity": count_digits,      "percent": percent(count_digits)},
+        "spaces":      {"quantity": count_spaces,      "percent": percent(count_spaces)},
+        "punctuation": {"quantity": count_punctuation, "percent": percent(count_punctuation)},
     }
 
 
@@ -72,14 +87,31 @@ def _get_tokens_stats(text: str) -> TokensStats:
     """Подсчет количества токенов."""
     text = text.strip()
 
+    paragraphs = [p for p in text.split('\n') if p.strip()]
+    sentences = [s for s in re.split(r'(?<=[.!?»])\s+', text) if s.strip()]
+    words = re.findall(r'\b\w+\b', text)
+
     return {
-        "paragraphs": 0,
-        "sentences": 0,
-        "words": 0
+        "paragraphs": len(paragraphs),
+        "sentences": len(sentences),
+        "words": len(words),
     }
 
 
-def _get_pos_stats(text: str):
-    """Подсчет pos-аналитики"""
+def _get_pos_stats(text: str) -> dict:
+    """Подсчет pos-аналитики с помощью SpaCy."""
 
-    return
+    import spacy
+    try:
+        nlp = spacy.load("ru_core_news_sm")
+    except OSError:
+        return {}
+    doc = nlp(text)
+    counts = {}
+    for token in doc:
+        pos = token.pos_
+        if pos != "SPACE":
+            if pos not in counts:
+                counts[pos] = 0
+            counts[pos] += 1
+    return counts
