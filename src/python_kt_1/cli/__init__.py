@@ -40,10 +40,17 @@ def stats(
     - неформатированный вывод в файл.
     """
 
-    text = input.read_text(encoding="utf-8")
-    result = use_cases.stats(text)
+    import json
+    from .renderer import render_stats
 
-    print(result)
+    text = input.read_text(encoding="utf-8")
+    result = use_cases.stats(text, pos) if pos else use_cases.stats(text)
+
+    if output:
+        with output.open("w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+    else:
+        render_stats(result)
 
 
 @app.command()
@@ -133,8 +140,14 @@ def top_words(
 
     """
 
+    import json
+
     text = input.read_text(encoding="utf-8")
     result = use_cases.top_words(text, normalize_mode, pos)
 
-    print(result)
+    if output:
+        with output.open("w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+    else:
+        print(result)
 
