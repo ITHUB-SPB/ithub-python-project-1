@@ -39,7 +39,7 @@ def stats(
     - форматированный консольный вывод,
     - неформатированный вывод в файл.
     """
-
+    
     text = input.read_text(encoding="utf-8")
     result = use_cases.stats(text)
 
@@ -87,13 +87,63 @@ def search(
 
 @app.command("word-cloud")
 def word_cloud(
-    input: Annotated[
-        pathlib.Path,
-        typer.Argument(help="Исходный текстовый файл", exists=True, readable=True),
-    ],
-    output: pathlib.Path | None = pathlib.Path("/") / f"{strftime('%H_%M_$S', localtime())}_output.png",
-    preprocess_mode: Literal["basic", "stemming", "lemmatization"] = "stemming",
+        input: Annotated[
+            pathlib.Path,
+            typer.Argument(help="Исходный текстовый файл", exists=True, readable=True),
+        ],
+        output: Annotated[
+            Optional[pathlib.Path],
+            typer.Option("--output", "-o", help="Путь для сохранения PNG файла")
+        ] = None,
+        preprocess_mode: Annotated[
+            Literal["basic", "stemming", "lemmatization"],
+            typer.Option("--mode", "-m", help="Режим предобработки текста")
+        ] = "stemming",
 ):
+    """Построение облака важных слов.
+
+    Построение облака важных слов из текстового файла.
+
+    Возможности:
+    - сохранение результата (изображения) в файл
+    - три уровня предобработки (базовый, стемминг, лемматизация).
+    """
+
+    try:
+        # Читаем текст из файла
+        text = input.read_text(encoding="utf-8")
+
+        # Вызываем use case
+        result = use_cases.word_cloud(text, preprocess_mode)
+
+        # Извлекаем имя файла из результата
+        import re
+        match = re.search(r'файл: (\S+\.png)', result)
+        if match and output:
+            default_file = Path(match.group(1))
+            if default_file.exists():
+                # Добавляем расширение .png если нужно
+                if not output.suffix:
+                    output = output.with_suffix('.png')
+                elif output.suffix.lower() != '.png':
+                    output = output.with_suffix('.png')
+
+                # Переименовываем
+                default_file.rename(output)
+                result = result.replace(str(default_file), str(output))
+
+        # Выводим результат
+        print(result)
+
+    except FileNotFoundError:
+        print(f"Ошибка: файл {input} не найден")
+        raise typer.Exit(code=1)
+    except UnicodeDecodeError:
+        print(f"Ошибка: не удалось прочитать файл {input} в кодировке UTF-8")
+        raise typer.Exit(code=1)
+    except Exception as e:
+        print(f"Ошибка при создании облака слов: {e}")
+        raise typer.Exit(code=1)
     """Построение облака важных слов.
 
     Построение облака важных слов
@@ -102,11 +152,6 @@ def word_cloud(
     - сохранение результата (изображения) в файл
     - три уровня предобработки (базовый, стемминг, лемматизация).
     """
-
-    text = input.read_text(encoding="utf-8")
-    result = use_cases.word_cloud(text, preprocess_mode)
-
-    print(result)
 
 
 
