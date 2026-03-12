@@ -83,7 +83,7 @@ def search(
         if not rich:
             print(results)
         else:
-            render_search_results(results)
+            render_search_results(results, files_paths)
 
 
     except Exception as exc:
