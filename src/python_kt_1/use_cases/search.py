@@ -33,7 +33,6 @@ def search(
     if not is_regex:
         return _basic_search(pattern, text)
     else:
-        print("WIP")
         return _regular_search(pattern, text)
 
     return []
