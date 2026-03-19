@@ -7,7 +7,6 @@ from ..core.types import SearchResult
 console = Console()
 
 def render_search_results(file_path: pathlib.Path, results: typing.Iterable[SearchResult]):
-    """Отрисовка таблицы результатов для конкретного файла."""
     
     if not results:
         return
