@@ -3,13 +3,7 @@ from typing import Iterable, List
 from ..core.exceptions import PathArgumentError
 
 def get_files_from_path_arguments(*args: pathlib.Path) -> Iterable[pathlib.Path]:
-    """Возвращает список путей к текстовым файлам (.txt)
 
-    Выполняет требования:
-    - Поиск по директории (пункт 4)
-    - Фильтрация только .txt файлов (пункт 5)
-    - Выброс кастомных исключений (пункт 7)
-    """
 
     files_counter, dirs_counter = 0, 0
 
