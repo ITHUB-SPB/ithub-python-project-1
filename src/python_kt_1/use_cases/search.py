@@ -8,8 +8,7 @@ from ..core.exceptions import InvalidRegEx, BaseSearchError
 def search(
     pattern: str, file_path: pathlib.Path, is_regex: bool = False
 ) -> typing.Iterable[SearchResult]:
-    """Поиск подстроки или регулярного выражения в текстовом файле."""
-
+  
     try:
         text = file_path.read_text(encoding="utf-8")
     except FileNotFoundError:
