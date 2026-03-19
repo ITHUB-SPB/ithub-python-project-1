@@ -49,7 +49,6 @@ def stats(text: str, pos: bool = False) -> TextStats:
 
 
 def _get_symbols_stats(text: str) -> SymbolStats:
-    """Посимвольная статистика (количество и процент)."""
 
     count_alphas = 0
     count_digits = 0
@@ -69,7 +68,7 @@ def _get_symbols_stats(text: str) -> SymbolStats:
 
 
 def _get_tokens_stats(text: str) -> TokensStats:
-    """Подсчет количества токенов."""
+
     text = text.strip()
 
     return {
@@ -80,6 +79,5 @@ def _get_tokens_stats(text: str) -> TokensStats:
 
 
 def _get_pos_stats(text: str):
-    """Подсчет pos-аналитики"""
 
     return
