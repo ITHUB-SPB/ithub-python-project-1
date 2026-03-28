@@ -26,7 +26,6 @@ def _sort_by_count(item: tuple[str, int]) -> int:
 def top_words(
     text: str, 
     normalize_mode: Literal["stemming", "lemmatization"] = "stemming", 
-    pos: list[str] = ["__all__"]
 ) -> list[tuple[str, int]]:
     """Подсчет топ-N-важных слов.
 
