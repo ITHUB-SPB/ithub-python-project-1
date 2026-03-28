@@ -118,7 +118,6 @@ def top_words(
     ],
     output: pathlib.Path | None = None,
     normalize_mode: Literal["stemming", "lemmatization"] = "stemming",
-    pos: list[str] = ["__all__"],
 ):
     """Подсчет топ-N-важных слов.
 
@@ -126,7 +125,6 @@ def top_words(
 
     Возможности:
     - указание N слов,
-    - фильтр по POS-тегам,
     - базовая предобработка (фильтр по стоп-словам, токенизация),
     - два типа нормализации (стемминг, лемматизация),
     - запись результатов в файл.
